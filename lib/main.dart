@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmp/library.dart';
+import 'package:fmp/playerUI.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,6 +28,7 @@ class MusicPlayerHome extends StatefulWidget {
 
 class _MusicPlayerHomeState extends State<MusicPlayerHome> {
   int _selectedIndex = 0;
+  bool _isPlayerExpanded = false;
 
   final List<Widget> _pages = [
     Center(child: Text('Home')),
@@ -40,42 +42,52 @@ class _MusicPlayerHomeState extends State<MusicPlayerHome> {
     });
   }
 
+  void _togglePlayerExpansion() {
+    setState(() {
+      _isPlayerExpanded = !_isPlayerExpanded;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Music Player')),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_music),
-            label: 'Library',
-          ),
-        ],
-      ),
-      bottomSheet: Container(
-        color: Theme.of(context).colorScheme.surface,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Now Playing: Song Title'),
-            Row(
-              children: const [
-                Icon(Icons.skip_previous),
-                SizedBox(width: 8),
-                Icon(Icons.play_arrow),
-                SizedBox(width: 8),
-                Icon(Icons.skip_next),
-              ],
-            ),
-          ],
-        ),
-      ),
+      appBar:
+          _isPlayerExpanded ? null : AppBar(title: const Text('Music Player')),
+      body:
+          _isPlayerExpanded
+              ? MusicPlayer(
+                isExpanded: true,
+                onToggleExpansion: _togglePlayerExpansion,
+              )
+              : _pages[_selectedIndex],
+      bottomNavigationBar:
+          _isPlayerExpanded
+              ? null
+              : BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: _onItemTapped,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.search),
+                    label: 'Search',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.library_music),
+                    label: 'Library',
+                  ),
+                ],
+              ),
+      bottomSheet:
+          _isPlayerExpanded
+              ? null
+              : MusicPlayer(
+                isExpanded: false,
+                onToggleExpansion: _togglePlayerExpansion,
+              ),
     );
   }
 }
