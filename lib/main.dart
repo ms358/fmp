@@ -86,7 +86,18 @@ class _MusicPlayerHomeState extends State<MusicPlayerHome> {
               ? null
               : MusicPlayer(
                 isExpanded: false,
-                onToggleExpansion: _togglePlayerExpansion,
+                onToggleExpansion: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder:
+                        (context) => MusicPlayer(
+                          isExpanded: true,
+                          onToggleExpansion: () => Navigator.pop(context),
+                        ),
+                  );
+                },
               ),
     );
   }
